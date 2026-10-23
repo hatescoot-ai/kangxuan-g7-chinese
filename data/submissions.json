@@ -1,0 +1,177 @@
+[
+  {
+    "id": "sub_demo_01",
+    "student_id": "70101",
+    "student_name": "林語晴",
+    "class_name": "701班",
+    "unit_id": "L01",
+    "difficulty": "easy",
+    "score": 90,
+    "correct": 9,
+    "total": 10,
+    "time_spent_sec": 142,
+    "wrong_qids": [
+      "L01_easy_04"
+    ],
+    "skill_breakdown": {
+      "語境字音字形": [
+        3,
+        3
+      ],
+      "詞語成語運用": [
+        2,
+        3
+      ],
+      "擷取訊息": [
+        4,
+        4
+      ]
+    },
+    "timestamp": "2026-10-17 15:20:10"
+  },
+  {
+    "id": "sub_demo_02",
+    "student_id": "70101",
+    "student_name": "林語晴",
+    "class_name": "701班",
+    "unit_id": "L01",
+    "difficulty": "medium",
+    "score": 80,
+    "correct": 8,
+    "total": 10,
+    "time_spent_sec": 215,
+    "wrong_qids": [
+      "L01_medium_02",
+      "L01_medium_06"
+    ],
+    "skill_breakdown": {
+      "統整解釋": [
+        4,
+        5
+      ],
+      "寫作手法分析": [
+        4,
+        5
+      ]
+    },
+    "timestamp": "2026-10-17 15:35:42"
+  },
+  {
+    "id": "sub_demo_03",
+    "student_id": "70105",
+    "student_name": "陳宥辰",
+    "class_name": "701班",
+    "unit_id": "L01",
+    "difficulty": "hard",
+    "score": 70,
+    "correct": 7,
+    "total": 10,
+    "time_spent_sec": 310,
+    "wrong_qids": [
+      "L01_hard_01",
+      "L01_hard_03",
+      "L01_hard_05"
+    ],
+    "skill_breakdown": {
+      "跨文本對讀": [
+        2,
+        4
+      ],
+      "省思評鑑": [
+        3,
+        4
+      ],
+      "圖表與視覺素養": [
+        2,
+        2
+      ]
+    },
+    "timestamp": "2026-10-17 16:02:18"
+  },
+  {
+    "id": "sub_demo_04",
+    "student_id": "70112",
+    "student_name": "張子軒",
+    "class_name": "701班",
+    "unit_id": "L04",
+    "difficulty": "medium",
+    "score": 85,
+    "correct": 8,
+    "total": 10,
+    "time_spent_sec": 198,
+    "wrong_qids": [
+      "L04_medium_03",
+      "L04_medium_05"
+    ],
+    "skill_breakdown": {
+      "統整解釋": [
+        4,
+        5
+      ],
+      "寫作手法分析": [
+        4,
+        5
+      ]
+    },
+    "timestamp": "2026-10-17 16:18:05"
+  },
+  {
+    "id": "sub_demo_05",
+    "student_id": "70118",
+    "student_name": "黃品妍",
+    "class_name": "701班",
+    "unit_id": "L05",
+    "difficulty": "hard",
+    "score": 90,
+    "correct": 9,
+    "total": 10,
+    "time_spent_sec": 265,
+    "wrong_qids": [
+      "L05_hard_02"
+    ],
+    "skill_breakdown": {
+      "跨文本對讀": [
+        4,
+        5
+      ],
+      "省思評鑑": [
+        5,
+        5
+      ]
+    },
+    "timestamp": "2026-10-17 16:40:51"
+  },
+  {
+    "id": "sub_demo_06",
+    "student_id": "70123",
+    "student_name": "吳承恩",
+    "class_name": "701班",
+    "unit_id": "L07",
+    "difficulty": "easy",
+    "score": 60,
+    "correct": 6,
+    "total": 10,
+    "time_spent_sec": 180,
+    "wrong_qids": [
+      "L07_easy_01",
+      "L07_easy_02",
+      "L07_easy_05",
+      "L07_easy_07"
+    ],
+    "skill_breakdown": {
+      "語境字音字形": [
+        2,
+        4
+      ],
+      "詞語成語運用": [
+        2,
+        3
+      ],
+      "擷取訊息": [
+        2,
+        3
+      ]
+    },
+    "timestamp": "2026-10-17 16:55:12"
+  }
+]

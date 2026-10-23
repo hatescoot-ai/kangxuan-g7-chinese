@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="翰墨書院" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./assets/ai_cards/card_literacy_reading_compass.jpg" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ntfy.sh; object-src 'none'; base-uri 'self';" />
+  <title>翰墨書院｜康軒國一上國文自學</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=20261023a" />
+</head>
+<body>
+  <header class="top-navbar no-print">
+    <div class="navbar-inner">
+      <div class="brand-wrap" role="button" tabindex="0" onclick="app.navigate('home')">
+        <span class="brand-seal">翰</span>
+        <span>
+          <span class="brand-title">翰墨書院</span>
+          <span class="brand-subtitle">康軒國一上・國文自學</span>
+        </span>
+      </div>
+
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-view="home" onclick="app.navigate('home')">課程首頁</button>
+        <button class="nav-tab" data-view="studio" onclick="app.navigate('studio')">課文與圖卡</button>
+        <button class="nav-tab" data-view="quiz" onclick="app.navigate('quiz')">題目練習</button>
+        <button class="nav-tab" data-view="leitner" onclick="app.navigate('leitner')">錯題本<span id="nav-wrong-badge" class="nav-badge">0</span></button>
+        <button class="nav-tab teacher-tab" data-view="teacher" onclick="app.navigate('teacher')">教師後台</button>
+        <a class="nav-tab" href="./ios.html">手機版</a>
+      </nav>
+
+      <div class="user-pill-bar">
+        <span class="rank-pill" id="user-rank-pill" title="累積積分"><span id="user-rank-text">童生・0 分</span></span>
+        <button class="student-btn" onclick="app.openUserModal()">
+          <span id="user-name-label">70101 林語晴</span> <span class="arrow">↗</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dynamic View Container -->
+  <main class="main-container" id="app-root"></main>
+
+  <div class="modal-backdrop" id="user-modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">換人或換裝置</p>
+          <h3 class="modal-title">學生身分與存檔密語</h3>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="app.closeUserModal()" aria-label="關閉">✕</button>
+      </div>
+      <p class="modal-note">共用平板或 Chromebook 重開機會清掉紀錄。換人時先改座號姓名；要換裝置，就複製「存檔密語」到另一台貼上還原。</p>
+
+      <div class="form-grid">
+        <label>班級<input id="inp-class" class="search-input" value="701班" /></label>
+        <label>座號／學號<input id="inp-sid" class="search-input" value="70101" /></label>
+        <label>姓名<input id="inp-sname" class="search-input" value="林語晴" /></label>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="app.saveUserIdentity()">儲存並切換</button>
+        <button class="btn btn-secondary" onclick="app.resetCurrentSeat()">清空這台的紀錄（換下一位）</button>
+      </div>
+
+      <hr class="rule" />
+
+      <p class="eyebrow">跨裝置存檔密語</p>
+      <textarea id="save-code-box" rows="3" class="code-box" placeholder="按「產生存檔密語」，或貼上之前的密語再按「還原進度」"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="app.generateSaveCode()">產生並複製密語</button>
+        <button class="btn btn-secondary" onclick="app.restoreSaveCode()">貼上密語還原</button>
+        <button class="btn btn-secondary" onclick="app.downloadProgressJson()">下載進度檔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Lightbox Modal -->
+  <div class="modal-backdrop" id="img-modal" role="button" tabindex="0" onclick="this.classList.remove('open')">
+    <div class="modal-card" role="dialog" tabindex="-1" style="max-width:860px;text-align:center;" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="圖卡放大預覽" style="max-width:100%;max-height:72vh;border-radius:8px;" />
+      <p id="lightbox-caption" class="lightbox-caption"></p>
+      <button class="btn btn-secondary" style="margin-top:0.75rem;" onclick="document.getElementById('img-modal').classList.remove('open')">關閉預覽</button>
+    </div>
+  </div>
+
+  <script src="./data/curriculum_bank.js?v=20261023a"></script>
+  <script src="./app.js?v=20261023a"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "翰墨書院・康軒國一上國文 108會考素養練功坊",
+  "short_name": "翰墨書院",
+  "description": "115-1 康軒國一上國文・防洩題三級素養題庫・AI知識圖卡・iOS遠端雙向通知",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7f3eb",
+  "theme_color": "#1a2b4c",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./assets/ai_cards/card_literacy_reading_compass.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

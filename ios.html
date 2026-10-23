@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="翰墨遠端助理" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./assets/ai_cards/card_literacy_reading_compass.jpg" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://ntfy.sh; object-src 'none'; base-uri 'self';" />
+  <title>📱 iOS / 手機遠端自動彈窗與雙向對話中心</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --card: #ffffff;
+      --primary: #1a2b4c;
+      --accent: #b83b2b;
+      --jade: #1e6b52;
+      --border: #e2dacb;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: env(safe-area-inset-top, 12px) 14px env(safe-area-inset-bottom, 20px) 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro TC", "PingFang TC", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: #1f2421;
+    }
+    .header-box {
+      background: linear-gradient(135deg, #1a2b4c, #27406b);
+      color: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(26,43,76,0.18);
+      margin-bottom: 14px;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      margin-right: 6px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+      margin-bottom: 14px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: none;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.1s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-jade { background: var(--jade); color: #fff; }
+    .btn-outline { background: #f8fafc; color: var(--primary); border: 1px solid #cbd5e1; }
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      padding: 12px;
+      font-size: 16px; /* Prevents iOS Safari auto-zoom on focus! */
+      font-family: inherit;
+      resize: none;
+    }
+    .msg-item {
+      padding: 12px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      margin-bottom: 10px;
+    }
+    .msg-time { font-size: 0.78rem; color: #64748b; margin-bottom: 4px; }
+    .msg-text { font-size: 0.95rem; white-space: pre-line; line-height: 1.5; font-weight: 500; }
+
+    /* iOS Auto-Pop-Up Alert Modal */
+    .ios-popup-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .ios-popup-backdrop.show { display: flex; animation: popIn 0.22s ease-out; }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .ios-popup-box {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      border: 2px solid var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="header-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:0.82rem;opacity:0.9;">
+        <span class="status-dot"></span><span id="conn-status">iOS / Android 即時雙向連線中</span>
+      </div>
+      <a href="./index.html" style="color:#fde047;font-size:0.82rem;font-weight:700;text-decoration:none;">🏯 返回書院首頁 ➔</a>
+    </div>
+    <h1 style="font-size:1.25rem;margin:8px 0 4px 0;">📲 翰墨書院・iOS 遠端自動彈窗中心</h1>
+    <div style="font-size:0.82rem;opacity:0.88;">專屬頻道：<code class="topic-text">未設定</code>（收到新通知會自動彈出視窗＋響鈴）</div>
+  </div>
+
+  <!-- iOS Sound & Notification Activation Bar -->
+  <div class="card" style="background:#fffbeb;border-color:#fde68a;">
+    <div style="font-weight:800;color:#92400e;margin-bottom:6px;font-size:0.92rem;">🍎 iPhone (iOS) 自動彈窗與響鈴啟用設定：</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-accent" style="flex:1;padding:10px;" onclick="enableIosAudioAndNotif()">
+        🔔 1. 點此啟用 iOS 音效與自動彈窗
+      </button>
+      <a class="btn btn-primary" style="flex:1;padding:10px;" id="ntfy-app-link" href="#">
+        📲 2. 在 ntfy App 打開
+      </a>
+    </div>
+    <div id="ios-setup-tip" style="font-size:0.78rem;color:#78350f;margin-top:8px;line-height:1.45;">
+      💡 <strong>iPhone 鎖屏推播秘訣：</strong>若使用 Safari，請點底部「<strong>分享 ⬆️</strong>」➔「<strong>加入主畫面</strong>」；或免費下載 App Store 的「<strong>ntfy</strong>」App 訂閱 <code class="topic-text">未設定</code>，鎖定螢幕也會自動跳出通知！
+    </div>
+  </div>
+
+  <!-- Direct Reply Box -->
+  <div class="card">
+    <div style="font-weight:800;font-size:1rem;margin-bottom:8px;">✍️ 傳送指令給電腦端 AI 助教</div>
+    <textarea id="reply-input" rows="3" placeholder="在此輸入您的指示（例如：幫我調整第一課題目、或是任何修改要求）..."></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-jade" style="flex:2;width:100%;" onclick="sendReply()">🚀 立即傳送指令</button>
+      <button class="btn btn-outline" style="flex:1;" onclick="testPopupNow()">🔔 測試彈窗</button>
+    </div>
+
+    <div style="font-size:0.82rem;color:#64748b;margin-top:12px;font-weight:700;">⚡ 一鍵快速回覆（點擊即發送）：</div>
+    <div class="quick-grid">
+      <button class="btn btn-outline" onclick="sendQuick('✅ 收到，請照這樣繼續執行！')">✅ 收到，繼續執行</button>
+      <button class="btn btn-outline" onclick="sendQuick('👍 題庫與課本習作題確認OK！')">👍 題庫確認 OK</button>
+      <button class="btn btn-outline" onclick="sendQuick('📊 請回報目前最新進度')">📊 回報目前進度</button>
+      <button class="btn btn-outline" onclick="sendQuick('🛑 請先暫停，等我回電腦前')">🛑 先暫停等我</button>
+    </div>
+  </div>
+
+  <!-- Live Message Stream -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-weight:800;font-size:1rem;">📬 最新即時訊息紀錄</span>
+      <button class="btn btn-outline" style="padding:4px 10px;font-size:0.8rem;" onclick="pollMessages(true)">🔄 重新整理</button>
+    </div>
+    <div id="msg-list">載入訊息中...</div>
+  </div>
+
+  <!-- Automatic Pop-up Alert Modal (Triggered automatically on new message!) -->
+  <div class="ios-popup-backdrop" id="auto-popup">
+    <div class="ios-popup-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="background:#fee2e2;color:#b91c1c;padding:4px 10px;border-radius:99px;font-size:0.8rem;font-weight:800;">🔔 電腦端最新自動彈出通知</span>
+        <span id="popup-time" style="font-size:0.78rem;color:#64748b;">剛剛</span>
+      </div>
+      <h3 id="popup-title" style="margin:4px 0 8px 0;font-size:1.1rem;color:#1a2b4c;">翰墨書院進度通知</h3>
+      <div id="popup-body" style="background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;font-size:0.95rem;white-space:pre-line;line-height:1.55;max-height:42vh;overflow-y:auto;margin-bottom:12px;"></div>
+
+      <textarea id="popup-reply-input" rows="2" placeholder="直接在此輸入回覆..." style="margin-bottom:10px;"></textarea>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-jade" style="flex:2;" onclick="sendReplyFromPopup()">🚀 傳送回覆並關閉</button>
+        <button class="btn btn-outline" style="flex:1;" onclick="closePopup()">知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // [QA 2026-10-23] 頻道代碼不寫在公開網頁。第一次用「ios.html#topic=頻道名稱」開啟，之後記在這台手機。
+    const TOPIC = (function () {
+      const ok = v => /^[A-Za-z0-9_-]{20,64}$/.test(v || "");
+      let v = "";
+      try {
+        const fromHash = new URLSearchParams(location.hash.slice(1)).get("topic");
+        if (ok(fromHash)) {
+          localStorage.setItem("hanmo_ntfy_topic", fromHash);
+          history.replaceState(null, "", location.pathname + location.search);
+        }
+        v = localStorage.getItem("hanmo_ntfy_topic") || "";
+      } catch (err) {
+        console.warn("[Hanmo iOS] Topic storage unavailable:", err);
+      }
+      return ok(v) ? v : "";
+    })();
+    const NTFY_URL = TOPIC ? "https://ntfy.sh/" + TOPIC : "";
+    document.querySelectorAll(".topic-text").forEach(el => {
+      el.textContent = TOPIC || "未設定（請用老師提供的設定網址開啟一次）";
+    });
+    if (TOPIC) document.getElementById("ntfy-app-link").href = "ntfy://ntfy.sh/" + TOPIC;
+    let seenIds = new Set();
+    let initialLoadDone = false;
+    let audioCtx = null;
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch((err) => {
+        console.warn("[Hanmo iOS] SW registration warning:", err);
+      });
+    }
+
+    function playChime() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.exponentialRampToValueAtTime(1318.5, now + 0.18);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.55);
+      } catch (err) {
+        console.warn("[Hanmo iOS] Audio chime skipped:", err);
+      }
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    }
+
+    async function enableIosAudioAndNotif() {
+      playChime();
+      const tipEl = document.getElementById("ios-setup-tip");
+      if ("Notification" in window) {
+        try {
+          const perm = await Notification.requestPermission();
+          if (tipEl) {
+            tipEl.textContent =
+              perm === "granted"
+                ? "✅ 已成功開啟 iOS 系統推播與音效！收到新訊息時將自動彈出視窗並響鈴。"
+                : "🔊 已啟用 iOS 網頁音效與自動彈窗！（若需鎖屏通知，請點 Safari 分享 ➔ 加入主畫面，或使用 ntfy App）。";
+          }
+        } catch (err) {
+          console.warn("[Hanmo iOS] Notification permission warning:", err);
+          if (tipEl) tipEl.textContent = "🔊 已啟用 iOS 音效與自動彈出視窗！";
+        }
+      } else if (tipEl) {
+        tipEl.textContent = "🔊 已啟用 iOS 音效與自動彈出視窗！";
+      }
+    }
+
+    function showAutoPopup(msgObj) {
+      playChime();
+      document.getElementById("popup-title").textContent = msgObj.title || "🔔 翰墨書院最新通知";
+      document.getElementById("popup-body").textContent = msgObj.message || "";
+      const dt = msgObj.time ? new Date(msgObj.time * 1000).toLocaleTimeString("zh-TW") : "剛剛";
+      document.getElementById("popup-time").textContent = dt;
+      document.getElementById("auto-popup").classList.add("show");
+
+      if ("Notification" in window && Notification.permission === "granted") {
+        try {
+          new Notification(msgObj.title || "翰墨書院通知", { body: msgObj.message });
+        } catch (err) {
+          console.warn("[Hanmo iOS] Notification display warning:", err);
+        }
+      }
+    }
+
+    function closePopup() {
+      document.getElementById("auto-popup").classList.remove("show");
+    }
+
+    function testPopupNow() {
+      showAutoPopup({
+        title: "🍎 iOS 自動彈出視窗測試成功！",
+        message: "當電腦端 AI 助教完成任務或向您回報時，您的 iPhone / 手機就會像這樣自動跳出視窗並發出提示音！您也可以直接在下方輸入框回覆。",
+        time: Math.floor(Date.now() / 1000)
+      });
+    }
+
+    async function sendTextToNtfy(text) {
+      if (!text || !text.trim()) return;
+      if (!NTFY_URL) return alert("這台手機還沒設定頻道。");
+      try {
+        await fetch(NTFY_URL, {
+          method: "POST",
+          headers: {
+            "Title": "Mobile User Reply (iOS/Web)",
+            "Priority": "urgent",
+            "Tags": "iphone,speech_balloon"
+          },
+          body: text.trim()
+        });
+        pollMessages(false);
+      } catch (e) {
+        alert("傳送失敗，請檢查網路：" + e.message);
+      }
+    }
+
+    async function sendReply() {
+      const inp = document.getElementById("reply-input");
+      if (!inp.value.trim()) return alert("請先輸入訊息內容！");
+      const val = inp.value;
+      inp.value = "";
+      await sendTextToNtfy(val);
+      alert("✅ 已傳送給電腦端 AI 助教！");
+    }
+
+    async function sendReplyFromPopup() {
+      const inp = document.getElementById("popup-reply-input");
+      if (inp.value.trim()) {
+        await sendTextToNtfy(inp.value);
+        inp.value = "";
+      }
+      closePopup();
+    }
+
+    async function sendQuick(text) {
+      await sendTextToNtfy(text);
+      alert("✅ 已快速傳送：「" + text + "」");
+    }
+
+    function renderMessages(list) {
+      const container = document.getElementById("msg-list");
+      if (!container) return;
+      if (!list || list.length === 0) {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.style.cssText = "color:#64748b;font-size:0.9rem;";
+        emptyDiv.textContent = "目前尚無訊息。";
+        container.replaceChildren(emptyDiv);
+        return;
+      }
+      const nodes = list.slice().reverse().map(m => {
+        const item = document.createElement("div");
+        item.className = "msg-item";
+
+        const timeDiv = document.createElement("div");
+        timeDiv.className = "msg-time";
+        const dt = m.time ? new Date(m.time * 1000).toLocaleString("zh-TW") : "";
+        timeDiv.textContent = dt + (m.title ? " ｜ " : "");
+        if (m.title) {
+          const strong = document.createElement("strong");
+          strong.textContent = String(m.title);
+          timeDiv.appendChild(strong);
+        }
+
+        const textDiv = document.createElement("div");
+        textDiv.className = "msg-text";
+        textDiv.textContent = String(m.message || "");
+
+        item.appendChild(timeDiv);
+        item.appendChild(textDiv);
+        return item;
+      });
+      container.replaceChildren(...nodes);
+    }
+
+    async function pollMessages(allowPopup = true) {
+      if (!NTFY_URL) return;
+      try {
+        const res = await fetch(NTFY_URL + "/json?poll=1&since=6h");
+        const txt = await res.text();
+        const lines = txt.trim().split("\n").filter(Boolean);
+        const msgs = [];
+        for (const ln of lines) {
+          try {
+            const obj = JSON.parse(ln);
+            if (obj.event === "message") {
+              msgs.push(obj);
+              if (!seenIds.has(obj.id)) {
+                seenIds.add(obj.id);
+                if (initialLoadDone && allowPopup && !String(obj.title || "").includes("Mobile User Reply")) {
+                  showAutoPopup(obj);
+                }
+              }
+            }
+          } catch (err) {
+            console.warn("[Hanmo iOS] Invalid JSON line:", err);
+          }
+        }
+        initialLoadDone = true;
+        renderMessages(msgs.slice(-15));
+      } catch (err) {
+        console.warn("[Hanmo iOS] Poll warning:", err);
+      }
+    }
+
+    // Start live SSE stream + fallback 5s polling for iOS Safari background recovery
+    function startLiveStream() {
+      pollMessages(false);
+      try {
+        const es = new EventSource(NTFY_URL + "/sse");
+        es.onmessage = (ev) => {
+          try {
+            const data = JSON.parse(ev.data);
+            if (data.event === "message" && !seenIds.has(data.id)) {
+              seenIds.add(data.id);
+              if (!String(data.title || "").includes("Mobile User Reply")) {
+                showAutoPopup(data);
+              }
+              pollMessages(false);
+            }
+          } catch (err) {
+            console.warn("[Hanmo iOS] SSE parse warning:", err);
+          }
+        };
+      } catch (err) {
+        console.warn("[Hanmo iOS] SSE connection warning:", err);
+      }
+      setInterval(() => pollMessages(true), 5000);
+    }
+
+    if (NTFY_URL) startLiveStream();
+    else renderMessages([]);
+  </script>
+</body>
+</html>
